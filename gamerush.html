@@ -39,12 +39,6 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);padding:20px}
 .modal .card{max-width:520px}
 .success-title{color:#ffcc00;font-weight:900}
-.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
-.offer{background:#0f1730;border:1px solid #2b2348;padding:8px;border-radius:12px;text-align:right;display:flex;gap:10px;align-items:center}
-.offer-img{width:110px;height:70px;object-fit:cover;border-radius:8px;flex-shrink:0}
-.offer h4{margin:0 0 6px;color:#ffdd57}
-.offer p{margin:0 0 8px;color:#c7c9d6;font-size:13px}
-.offer button{margin-top:6px;padding:8px 10px;border-radius:8px;background:#7c5cff;color:#fff;border:0;cursor:pointer}
 .price-row{margin-top:8px;color:#c7c9d6;font-size:14px}
 .total{margin-top:12px;font-weight:900;color:#ffcc00}
 </style>
@@ -60,7 +54,7 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 
 <div class="hero">
   <div class="hero-inner">
-    <img class="hero-img" src="https://picsum.photos/seed/mlbb-banner/1200/420" alt="صورة ترويجية شحن MLBB">
+    <img class="hero-img" src="https://picsum.photos/seed/mlbb-banner/1200/420" alt="صورة ترويجية شحن MLBB" loading="lazy">
     <h1>شحن Mobile Legends: Bang Bang بسرعة</h1>
     <p>اشحن Diamonds لحساب MLBB الخاص بك فورياً — نسخة تجريبية توضيحية.</p>
     <a class="btn" href="#order">ابدأ الشحن</a>
@@ -71,7 +65,7 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
   <h2>اللعبة المتاحة</h2>
   <div class="games">
     <div class="card" aria-label="Mobile Legends">
-      <img class="card-img" src="https://picsum.photos/seed/mlbb-card/600/300" alt="Mobile Legends">
+      <img class="card-img" src="https://picsum.photos/seed/mlbb-card/600/300" alt="Mobile Legends" loading="lazy">
       <h3>Mobile Legends (MLBB)</h3>
       <p>شحن Diamonds بسرعة وسهولة لحسابك.</p>
     </div>
@@ -81,11 +75,6 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 <section id="order">
   <h2>طلب شحن MLBB</h2>
   <div class="order">
-
-    <h3 style="margin-top:0">العروض الحالية</h3>
-    <div id="offers" class="offers" aria-live="polite">
-      <!-- Offers populated by JS -->
-    </div>
 
     <form id="orderForm" aria-label="نموذج طلب شحن MLBB">
       <label for="game">اللعبة</label>
@@ -129,7 +118,6 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
       <input id="notes" name="notes" type="text" placeholder="مثال: اعلى مستوى حساب، سرعة الشحن...">
 
       <input type="hidden" id="package_price" name="package_price" value="">
-      <input type="hidden" id="offer_id" name="offer_id" value="">
 
       <button class="btn" type="submit" id="submitBtn">تأكيد الطلب</button>
     </form>
@@ -165,34 +153,9 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
     {id: '725', diamonds: 725, price: 120}
   ];
 
-  // Offers: some are percent discounts, others are bonus diamonds
-  const offers = [
-    {id: 'O1', title: 'عرض ترحيبي 10%', desc: 'احصل على 10% خصم على باقة 355', type: 'percent', value: 10, appliesTo: ['355'], img: 'https://picsum.photos/seed/offer1/400/200'},
-    {id: 'O2', title: 'باقة مضاعفة', desc: '+10 Diamonds مجاناً على باقة 50', type: 'bonus', value: 10, appliesTo: ['50'], img: 'https://picsum.photos/seed/offer2/400/200'},
-    {id: 'O3', title: 'تخفيض خاص 20%', desc: 'خصم 20% على باقة 725', type: 'percent', value: 20, appliesTo: ['725'], img: 'https://picsum.photos/seed/offer3/400/200'}
-  ];
-
-  const offersContainer = document.getElementById('offers');
   const packageSelect = document.getElementById('package');
   const priceDisplay = document.getElementById('priceDisplay');
   const packagePriceInput = document.getElementById('package_price');
-  const offerIdInput = document.getElementById('offer_id');
-
-  // Populate offers UI
-  offers.forEach(o => {
-    const el = document.createElement('div');
-    el.className = 'offer';
-    el.innerHTML = `
-      <img class="offer-img" src="${o.img}" alt="${o.title}">
-      <div style="flex:1;text-align:right">
-        <h4>${o.title}</h4>
-        <p>${o.desc}</p>
-        <div style="font-size:12px;color:#9da3ba">مطبق على: ${o.appliesTo.map(id=>id+' Diamonds').join(', ')}</div>
-        <div style="margin-top:6px"><button data-offer="${o.id}">تطبيق العرض</button></div>
-      </div>
-    `;
-    offersContainer.appendChild(el);
-  });
 
   // Populate package options
   packages.forEach(p => {
@@ -204,55 +167,19 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 
   function formatPrice(num){ return num===0 ? 'مجاني' : num + ' جنيه'; }
 
-  function computePrice(packageId, offerId){
+  function computePrice(packageId){
     const p = packages.find(x=>x.id===packageId);
     if(!p) return {price:0, diamonds:0};
-    let price = p.price;
-    let diamonds = p.diamonds;
-    if(offerId){
-      const o = offers.find(x=>x.id===offerId);
-      if(o && o.appliesTo.includes(packageId)){
-        if(o.type==='percent'){
-          price = Math.round(price * (100 - o.value) / 100);
-        } else if(o.type==='bonus'){
-          diamonds = diamonds + o.value;
-        }
-      }
-    }
-    return {price, diamonds};
+    return {price: p.price, diamonds: p.diamonds};
   }
 
   // Handle package change
   packageSelect.addEventListener('change', function(){
     const pkg = packageSelect.value;
-    const applied = offerIdInput.value || null;
-    const res = computePrice(pkg, applied);
+    const res = computePrice(pkg);
     priceDisplay.textContent = formatPrice(res.price) + (res.diamonds ? ` — ${res.diamonds} Diamonds` : '');
     packagePriceInput.value = res.price;
   });
-
-  // Handle offer apply
-  offersContainer.addEventListener('click', function(e){
-    if(e.target.matches('button[data-offer]')){
-      const oid = e.target.getAttribute('data-offer');
-      offerIdInput.value = oid;
-      // mark selection visually (simple)
-      Array.from(offersContainer.querySelectorAll('.offer')).forEach(div=>div.style.boxShadow='none');
-      e.target.closest('.offer').style.boxShadow = '0 0 0 3px rgba(124,92,255,0.12)';
-      // recompute price for current package
-      const pkg = packageSelect.value;
-      const res = computePrice(pkg, oid);
-      priceDisplay.textContent = formatPrice(res.price) + (res.diamonds ? ` — ${res.diamonds} Diamonds` : '');
-      packagePriceInput.value = res.price;
-      // show a brief notice
-      const old = e.target.textContent;
-      e.target.textContent = 'تم التطبيق ✓';
-      setTimeout(()=> e.target.textContent = old, 1800);
-    }
-  });
-
-  // Initialize default price display
-  priceDisplay.textContent = '-';
 
   // Form handling & modal
   const form = document.getElementById('orderForm');
@@ -262,7 +189,7 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
   const closeModal = document.getElementById('closeModal');
 
   function showModal(order){
-    modalText.textContent = `اللعبة: ${order.game} — UID: ${order.uid} — الباقة: ${order.package} Diamonds — السعر: ${order.package_price===0? 'مجاني' : order.package_price + ' جنيه'}${order.offer_id?(' — عرض: '+order.offer_id):''}`;
+    modalText.textContent = `اللعبة: ${order.game} — UID: ${order.uid} — الباقة: ${order.package} Diamonds — السعر: ${order.package_price===0? 'مجاني' : order.package_price + ' جنيه'}`;
     const blob = new Blob([JSON.stringify(order, null, 2)], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
     downloadLink.href = url;
@@ -289,7 +216,6 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
       player_name: data.get('player_name'),
       payment_method: data.get('payment_method'),
       notes: data.get('notes'),
-      offer_id: data.get('offer_id') || null,
       created_at: new Date().toISOString(),
       demo: true
     };
@@ -306,6 +232,9 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
   closeModal.addEventListener('click', hideModal);
   modal.addEventListener('click', function(e){ if(e.target===modal) hideModal(); });
   window.addEventListener('keydown', function(e){ if(e.key==='Escape') hideModal();});
+
+  // initialize display if package already selected
+  if(packageSelect.value) packageSelect.dispatchEvent(new Event('change'));
 
 })();
 </script>

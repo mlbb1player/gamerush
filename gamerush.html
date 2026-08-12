@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GameRush — شحن الألعاب</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:#fff}
+header{padding:22px 6%;display:flex;justify-content:space-between;align-items:center;background:#111831}
+.logo{font-size:28px;font-weight:800;color:#7c5cff}.logo span{color:#fff}
+nav a{color:#ddd;text-decoration:none;margin-right:20px}
+.hero{padding:70px 6%;text-align:center;background:linear-gradient(135deg,#111831,#17103b)}
+.hero h1{font-size:44px;margin:0 0 12px}.hero p{color:#c7c9d6;font-size:18px}
+.btn{display:inline-block;margin-top:18px;padding:13px 25px;border-radius:12px;background:#7c5cff;color:#fff;text-decoration:none;font-weight:700}
+section{padding:45px 6%}h2{text-align:center;margin-bottom:28px}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px}
+.card{background:#151c35;border:1px solid #293152;border-radius:18px;padding:22px;text-align:center}
+.icon{font-size:45px}.card h3{margin:12px 0 6px}.card p{color:#aaa}
+.order{max-width:600px;margin:auto;background:#151c35;padding:25px;border-radius:20px}
+label{display:block;margin:14px 0 7px}input,select{width:100%;padding:13px;border-radius:10px;border:1px solid #394264;background:#0e1428;color:#fff}
+button{width:100%;border:0;cursor:pointer;font-size:16px}.note{color:#9da3ba;font-size:13px;text-align:center;margin-top:14px}
+footer{text-align:center;padding:25px;background:#080c18;color:#9298ab}
+</style>
+</head>
+<body>
+<header><div class="logo">Game<span>Rush</span> 🎮</div><nav><a href="#games">الألعاب</a><a href="#order">شحن الآن</a></nav></header>
+<div class="hero"><h1>اشحن لعبتك بسرعة ⚡</h1><p>GameRush — منصة تجريبية لشحن الألعاب بسهولة.</p><a class="btn" href="#order">ابدأ الشحن</a></div>
+<section id="games"><h2>اختر لعبتك</h2><div class="games">
+<div class="card"><div class="icon">⚽</div><h3>eFootball</h3><p>شحن العملات والباقات</p></div>
+<div class="card"><div class="icon">🔫</div><h3>PUBG Mobile</h3><p>شحن UC</p></div>
+<div class="card"><div class="icon">⚔️</div><h3>Mobile Legends</h3><p>شحن Diamonds</p></div>
+<div class="card"><div class="icon">🔥</div><h3>Free Fire</h3><p>شحن Diamonds</p></div>
+</div></section>
+<section id="order"><h2>طلب شحن</h2><div class="order">
+<label>اللعبة</label><select><option>eFootball</option><option>PUBG Mobile</option><option>Mobile Legends</option><option>Free Fire</option></select>
+<label>Player ID</label><input placeholder="اكتب ID اللاعب">
+<label>الباقة</label><select><option>اختر الباقة</option><option>باقة تجريبية 100</option><option>باقة تجريبية 300</option><option>باقة تجريبية 500</option></select>
+<label>طريقة الدفع</label><select><option>اختر طريقة الدفع</option><option>فودافون كاش</option><option>إنستا باي</option><option>تحويل بنكي</option></select>
+<button class="btn" onclick="alert('تم تسجيل الطلب بشكل تجريبي. لم يتم تنفيذ أي عملية دفع.')">تأكيد الطلب</button>
+<div class="note">هذه نسخة تجريبية للتصميم ولا تنفذ عمليات دفع حقيقية.</div>
+</div></section>
+<footer>© 2026 GameRush — جميع الحقوق محفوظة</footer>
+</body></html>

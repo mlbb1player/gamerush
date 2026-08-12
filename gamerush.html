@@ -24,7 +24,7 @@ h2{text-align:center;margin-bottom:22px}
 .icon{font-size:48px}
 .card h3{margin:12px 0 6px}
 .card p{color:#aaa}
-.order{max-width:680px;margin:auto;background:#151c35;padding:25px;border-radius:20px}
+.order{max-width:760px;margin:auto;background:#151c35;padding:25px;border-radius:20px}
 label{display:block;margin:12px 0 6px}
 input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #394264;background:#0e1428;color:#fff}
 button{width:100%;border:0;cursor:pointer;font-size:16px}
@@ -36,6 +36,14 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);padding:20px}
 .modal .card{max-width:520px}
 .success-title{color:#ffcc00;font-weight:900}
+.offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
+.offer{background:#0f1730;border:1px solid #2b2348;padding:14px;border-radius:12px;text-align:right}
+.offer h4{margin:0 0 6px;color:#ffdd57}
+.offer p{margin:0 0 8px;color:#c7c9d6;font-size:14px}
+.offer .price{font-weight:800;color:#14a76c}
+.offer button{margin-top:8px;padding:8px 10px;border-radius:8px;background:#7c5cff;color:#fff;border:0;cursor:pointer}
+.price-row{margin-top:8px;color:#c7c9d6;font-size:14px}
+.total{margin-top:12px;font-weight:900;color:#ffcc00}
 </style>
 </head>
 <body>
@@ -67,6 +75,12 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 <section id="order">
   <h2>طلب شحن MLBB</h2>
   <div class="order">
+
+    <h3 style="margin-top:0">العروض الحالية</h3>
+    <div id="offers" class="offers" aria-live="polite">
+      <!-- Offers populated by JS -->
+    </div>
+
     <form id="orderForm" aria-label="نموذج طلب شحن MLBB">
       <label for="game">اللعبة</label>
       <select id="game" name="game" required aria-required="true">
@@ -80,7 +94,7 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
           <div id="uidHelp" style="color:#9da3ba;font-size:12px;margin-top:6px">أدخل رقم UID الخاص بحساب MLBB (أرقام فقط).</div>
         </div>
         <div>
-          <label for="zone">السير��ر / المنطقة</label>
+          <label for="zone">السيرفر / المنطقة</label>
           <input id="zone" name="zone" type="text" placeholder="مثل: 1" required aria-describedby="zoneHelp">
           <div id="zoneHelp" style="color:#9da3ba;font-size:12px;margin-top:6px">أدخل رقم السيرفر إن وُجد (أو اترك 1).</div>
         </div>
@@ -89,12 +103,9 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
       <label for="package">الباقة</label>
       <select id="package" name="package" required>
         <option value="">اختر الباقة</option>
-        <option value="10">10 Diamonds — تجربة (مجاني)</option>
-        <option value="50">50 Diamonds — 10 جنيه</option>
-        <option value="140">140 Diamonds — 25 جنيه</option>
-        <option value="355">355 Diamonds — 60 جنيه</option>
-        <option value="725">725 Diamonds — 120 جنيه</option>
       </select>
+
+      <div id="priceInfo" class="price-row" aria-live="polite">السعر: <span id="priceDisplay">-</span></div>
 
       <label for="payer">اسم اللاعب (اختياري)</label>
       <input id="payer" name="player_name" type="text" placeholder="اسم اللاعب على الحساب">
@@ -110,6 +121,9 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 
       <label for="notes">ملاحظات (اختياري)</label>
       <input id="notes" name="notes" type="text" placeholder="مثال: اعلى مستوى حساب، سرعة الشحن...">
+
+      <input type="hidden" id="package_price" name="package_price" value="">
+      <input type="hidden" id="offer_id" name="offer_id" value="">
 
       <button class="btn" type="submit" id="submitBtn">تأكيد الطلب</button>
     </form>
@@ -136,6 +150,97 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 
 <script>
 (function(){
+  // Data: packages prices in EGP (demo)
+  const packages = [
+    {id: '10', diamonds: 10, price: 0},
+    {id: '50', diamonds: 50, price: 10},
+    {id: '140', diamonds: 140, price: 25},
+    {id: '355', diamonds: 355, price: 60},
+    {id: '725', diamonds: 725, price: 120}
+  ];
+
+  // Offers: some are percent discounts, others are bonus diamonds
+  const offers = [
+    {id: 'O1', title: 'عرض ترحيبي 10%', desc: 'احصل على 10% خصم على باقة 355', type: 'percent', value: 10, appliesTo: ['355']},
+    {id: 'O2', title: 'باقة مضاعفة', desc: '+10 Diamonds مجاناً على باقة 50', type: 'bonus', value: 10, appliesTo: ['50']},
+    {id: 'O3', title: 'تخفيض خاص 20%', desc: 'خصم 20% على باقة 725', type: 'percent', value: 20, appliesTo: ['725']}
+  ];
+
+  const offersContainer = document.getElementById('offers');
+  const packageSelect = document.getElementById('package');
+  const priceDisplay = document.getElementById('priceDisplay');
+  const packagePriceInput = document.getElementById('package_price');
+  const offerIdInput = document.getElementById('offer_id');
+
+  // Populate offers UI
+  offers.forEach(o => {
+    const el = document.createElement('div');
+    el.className = 'offer';
+    el.innerHTML = `<h4>${o.title}</h4><p>${o.desc}</p><div>مطبق على: ${o.appliesTo.map(id=>id+' Diamonds').join(', ')}</div><div style="margin-top:6px"><button data-offer="${o.id}">تطبيق العرض</button></div>`;
+    offersContainer.appendChild(el);
+  });
+
+  // Populate package options
+  packages.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = `${p.diamonds} Diamonds — ${p.price===0? 'مجاني' : p.price + ' جنيه'}`;
+    packageSelect.appendChild(opt);
+  });
+
+  function formatPrice(num){ return num===0 ? 'مجاني' : num + ' جنيه'; }
+
+  function computePrice(packageId, offerId){
+    const p = packages.find(x=>x.id===packageId);
+    if(!p) return {price:0, diamonds:0};
+    let price = p.price;
+    let diamonds = p.diamonds;
+    if(offerId){
+      const o = offers.find(x=>x.id===offerId);
+      if(o && o.appliesTo.includes(packageId)){
+        if(o.type==='percent'){
+          price = Math.round(price * (100 - o.value) / 100);
+        } else if(o.type==='bonus'){
+          diamonds = diamonds + o.value;
+        }
+      }
+    }
+    return {price, diamonds};
+  }
+
+  // Handle package change
+  packageSelect.addEventListener('change', function(){
+    const pkg = packageSelect.value;
+    const applied = offerIdInput.value || null;
+    const res = computePrice(pkg, applied);
+    priceDisplay.textContent = formatPrice(res.price) + (res.diamonds ? ` — ${res.diamonds} Diamonds` : '');
+    packagePriceInput.value = res.price;
+  });
+
+  // Handle offer apply
+  offersContainer.addEventListener('click', function(e){
+    if(e.target.matches('button[data-offer]')){
+      const oid = e.target.getAttribute('data-offer');
+      offerIdInput.value = oid;
+      // mark selection visually (simple)
+      Array.from(offersContainer.querySelectorAll('.offer')).forEach(div=>div.style.boxShadow='none');
+      e.target.closest('.offer').style.boxShadow = '0 0 0 3px rgba(124,92,255,0.12)';
+      // recompute price for current package
+      const pkg = packageSelect.value;
+      const res = computePrice(pkg, oid);
+      priceDisplay.textContent = formatPrice(res.price) + (res.diamonds ? ` — ${res.diamonds} Diamonds` : '');
+      packagePriceInput.value = res.price;
+      // show a brief notice
+      const old = e.target.textContent;
+      e.target.textContent = 'تم التطبيق ✓';
+      setTimeout(()=> e.target.textContent = old, 1800);
+    }
+  });
+
+  // Initialize default price display
+  priceDisplay.textContent = '-';
+
+  // Form handling & modal
   const form = document.getElementById('orderForm');
   const modal = document.getElementById('modal');
   const modalText = document.getElementById('modalText');
@@ -143,7 +248,7 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
   const closeModal = document.getElementById('closeModal');
 
   function showModal(order){
-    modalText.textContent = `اللعبة: ${order.game} — UID: ${order.uid} — الباقة: ${order.package} Diamonds — طريقة الدفع: ${order.payment_method}`;
+    modalText.textContent = `اللعبة: ${order.game} — UID: ${order.uid} — الباقة: ${order.package} Diamonds — السعر: ${order.package_price===0? 'مجاني' : order.package_price + ' جنيه'}${order.offer_id?(' — عرض: '+order.offer_id):''}`;
     const blob = new Blob([JSON.stringify(order, null, 2)], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
     downloadLink.href = url;
@@ -158,7 +263,6 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    // basic validity
     if(!form.checkValidity()){ form.reportValidity(); return; }
     const data = new FormData(form);
     const order = {
@@ -167,14 +271,15 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
       uid: data.get('uid'),
       zone: data.get('zone'),
       package: data.get('package'),
+      package_price: data.get('package_price'),
       player_name: data.get('player_name'),
       payment_method: data.get('payment_method'),
       notes: data.get('notes'),
+      offer_id: data.get('offer_id') || null,
       created_at: new Date().toISOString(),
       demo: true
     };
 
-    // save to localStorage (demo)
     try{
       const all = JSON.parse(localStorage.getItem('gamerush_orders')||'[]');
       all.push(order);
@@ -186,9 +291,8 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 
   closeModal.addEventListener('click', hideModal);
   modal.addEventListener('click', function(e){ if(e.target===modal) hideModal(); });
-
-  // Accessibility: close on Esc
   window.addEventListener('keydown', function(e){ if(e.key==='Escape') hideModal();});
+
 })();
 </script>
 

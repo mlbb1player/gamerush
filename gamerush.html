@@ -13,16 +13,19 @@ header{padding:18px 6%;display:flex;justify-content:space-between;align-items:ce
 .logo{font-size:26px;font-weight:900;color:#ffcc00}
 .logo span{color:#fff;font-weight:700}
 nav a{color:#ddd;text-decoration:none;margin-right:20px}
-.hero{padding:60px 6%;text-align:center;background:linear-gradient(135deg,#0e1530,#1a0f2b)}
-.hero h1{font-size:40px;margin:0 0 12px}
-.hero p{color:#c7c9d6;font-size:18px}
-.btn{display:inline-block;margin-top:18px;padding:12px 22px;border-radius:12px;background:#ffcc00;color:#0b1020;text-decoration:none;font-weight:800}
+.hero{padding:30px 6%;text-align:center;background:linear-gradient(135deg,#0e1530,#1a0f2b);border-bottom:1px solid rgba(255,255,255,0.02)}
+.hero .hero-inner{max-width:1100px;margin:auto}
+.hero-img{width:100%;height:280px;object-fit:cover;border-radius:12px;display:block;margin-bottom:14px;border:1px solid rgba(255,255,255,0.03)}
+.hero h1{font-size:34px;margin:0 0 8px}
+.hero p{color:#c7c9d6;font-size:16px;margin:0}
+.btn{display:inline-block;margin-top:14px;padding:12px 22px;border-radius:12px;background:#ffcc00;color:#0b1020;text-decoration:none;font-weight:800}
 section{padding:40px 6%}
 h2{text-align:center;margin-bottom:22px}
 .games{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px}
-.card{background:#151c35;border:1px solid #293152;border-radius:18px;padding:22px;text-align:center}
+.card{background:#151c35;border:1px solid #293152;border-radius:18px;padding:18px;text-align:center}
+.card .card-img{width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:10px}
 .icon{font-size:48px}
-.card h3{margin:12px 0 6px}
+.card h3{margin:8px 0 6px}
 .card p{color:#aaa}
 .order{max-width:760px;margin:auto;background:#151c35;padding:25px;border-radius:20px}
 label{display:block;margin:12px 0 6px}
@@ -31,17 +34,17 @@ button{width:100%;border:0;cursor:pointer;font-size:16px}
 .note{color:#9da3ba;font-size:13px;text-align:center;margin-top:14px}
 footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-top:26px}
 .order-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:600px){.order-grid{grid-template-columns:1fr} .hero h1{font-size:28px}}
+@media(max-width:600px){.order-grid{grid-template-columns:1fr} .hero h1{font-size:24px} .hero-img{height:160px}}
 /* modal */
 .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);padding:20px}
 .modal .card{max-width:520px}
 .success-title{color:#ffcc00;font-weight:900}
 .offers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
-.offer{background:#0f1730;border:1px solid #2b2348;padding:14px;border-radius:12px;text-align:right}
+.offer{background:#0f1730;border:1px solid #2b2348;padding:8px;border-radius:12px;text-align:right;display:flex;gap:10px;align-items:center}
+.offer-img{width:110px;height:70px;object-fit:cover;border-radius:8px;flex-shrink:0}
 .offer h4{margin:0 0 6px;color:#ffdd57}
-.offer p{margin:0 0 8px;color:#c7c9d6;font-size:14px}
-.offer .price{font-weight:800;color:#14a76c}
-.offer button{margin-top:8px;padding:8px 10px;border-radius:8px;background:#7c5cff;color:#fff;border:0;cursor:pointer}
+.offer p{margin:0 0 8px;color:#c7c9d6;font-size:13px}
+.offer button{margin-top:6px;padding:8px 10px;border-radius:8px;background:#7c5cff;color:#fff;border:0;cursor:pointer}
 .price-row{margin-top:8px;color:#c7c9d6;font-size:14px}
 .total{margin-top:12px;font-weight:900;color:#ffcc00}
 </style>
@@ -56,16 +59,19 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 </header>
 
 <div class="hero">
-  <h1>شحن Mobile Legends: Bang Bang بسرعة</h1>
-  <p>اشحن Diamonds لحساب MLBB الخاص بك فورياً — نسخة تجريبية توضيحية.</p>
-  <a class="btn" href="#order">ابدأ الشحن</a>
+  <div class="hero-inner">
+    <img class="hero-img" src="https://picsum.photos/seed/mlbb-banner/1200/420" alt="صورة ترويجية شحن MLBB">
+    <h1>شحن Mobile Legends: Bang Bang بسرعة</h1>
+    <p>اشحن Diamonds لحساب MLBB الخاص بك فورياً — نسخة تجريبية توضيحية.</p>
+    <a class="btn" href="#order">ابدأ الشحن</a>
+  </div>
 </div>
 
 <section id="games">
   <h2>اللعبة المتاحة</h2>
   <div class="games">
     <div class="card" aria-label="Mobile Legends">
-      <div class="icon">🛡️</div>
+      <img class="card-img" src="https://picsum.photos/seed/mlbb-card/600/300" alt="Mobile Legends">
       <h3>Mobile Legends (MLBB)</h3>
       <p>شحن Diamonds بسرعة وسهولة لحسابك.</p>
     </div>
@@ -140,7 +146,7 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
     <div style="padding:18px">
       <h3 class="success-title">تم استلام طلبك (تجريبي)</h3>
       <p id="modalText" style="color:#c7c9d6"></p>
-      <div style="margin-top:12px;display:flex;gap:8px">
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
         <a id="downloadLink" class="btn" href="#" download="order.json" style="background:#14a76c">تحميل JSON</a>
         <button id="closeModal" class="btn" style="background:#7c5cff;color:#fff">إغلاق</button>
       </div>
@@ -161,9 +167,9 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 
   // Offers: some are percent discounts, others are bonus diamonds
   const offers = [
-    {id: 'O1', title: 'عرض ترحيبي 10%', desc: 'احصل على 10% خصم على باقة 355', type: 'percent', value: 10, appliesTo: ['355']},
-    {id: 'O2', title: 'باقة مضاعفة', desc: '+10 Diamonds مجاناً على باقة 50', type: 'bonus', value: 10, appliesTo: ['50']},
-    {id: 'O3', title: 'تخفيض خاص 20%', desc: 'خصم 20% على باقة 725', type: 'percent', value: 20, appliesTo: ['725']}
+    {id: 'O1', title: 'عرض ترحيبي 10%', desc: 'احصل على 10% خصم على باقة 355', type: 'percent', value: 10, appliesTo: ['355'], img: 'https://picsum.photos/seed/offer1/400/200'},
+    {id: 'O2', title: 'باقة مضاعفة', desc: '+10 Diamonds مجاناً على باقة 50', type: 'bonus', value: 10, appliesTo: ['50'], img: 'https://picsum.photos/seed/offer2/400/200'},
+    {id: 'O3', title: 'تخفيض خاص 20%', desc: 'خصم 20% على باقة 725', type: 'percent', value: 20, appliesTo: ['725'], img: 'https://picsum.photos/seed/offer3/400/200'}
   ];
 
   const offersContainer = document.getElementById('offers');
@@ -176,7 +182,15 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
   offers.forEach(o => {
     const el = document.createElement('div');
     el.className = 'offer';
-    el.innerHTML = `<h4>${o.title}</h4><p>${o.desc}</p><div>مطبق على: ${o.appliesTo.map(id=>id+' Diamonds').join(', ')}</div><div style="margin-top:6px"><button data-offer="${o.id}">تطبيق العرض</button></div>`;
+    el.innerHTML = `
+      <img class="offer-img" src="${o.img}" alt="${o.title}">
+      <div style="flex:1;text-align:right">
+        <h4>${o.title}</h4>
+        <p>${o.desc}</p>
+        <div style="font-size:12px;color:#9da3ba">مطبق على: ${o.appliesTo.map(id=>id+' Diamonds').join(', ')}</div>
+        <div style="margin-top:6px"><button data-offer="${o.id}">تطبيق العرض</button></div>
+      </div>
+    `;
     offersContainer.appendChild(el);
   });
 

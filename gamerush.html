@@ -102,21 +102,6 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
 
       <div id="priceInfo" class="price-row" aria-live="polite">السعر: <span id="priceDisplay">-</span></div>
 
-      <label for="payer">اسم اللاعب (اختياري)</label>
-      <input id="payer" name="player_name" type="text" placeholder="اسم اللاعب على الحساب">
-
-      <label for="payment">طريقة الدفع</label>
-      <select id="payment" name="payment_method" required>
-        <option value="">اختر طريقة الدفع</option>
-        <option>فودافون كاش</option>
-        <option>إنستا باي</option>
-        <option>تحويل بنكي</option>
-        <option>بطاقة ائتمان</option>
-      </select>
-
-      <label for="notes">ملاحظات (اختياري)</label>
-      <input id="notes" name="notes" type="text" placeholder="مثال: اعلى مستوى حساب، سرعة الشحن...">
-
       <input type="hidden" id="package_price" name="package_price" value="">
 
       <button class="btn" type="submit" id="submitBtn">تأكيد الطلب</button>
@@ -213,9 +198,6 @@ footer{text-align:center;padding:20px;background:#080c18;color:#9298ab;margin-to
       zone: data.get('zone'),
       package: data.get('package'),
       package_price: data.get('package_price'),
-      player_name: data.get('player_name'),
-      payment_method: data.get('payment_method'),
-      notes: data.get('notes'),
       created_at: new Date().toISOString(),
       demo: true
     };
